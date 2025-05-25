@@ -1,0 +1,141 @@
+{% extends 'layout.html' %}
+{% load widget_tweaks %}
+
+{% block title %}{% if form.instance.pk %}Edit{% else %}Create{% endif %} Task{% endblock %}
+
+{% block page_header %}{% if form.instance.pk %}Edit Task{% else %}Create New Task{% endif %}{% endblock %}
+{% block page_subheader %}{% if form.instance.pk %}Update the task details{% else %}Add a new task to your list{% endif %}{% endblock %}
+
+{% block content %}
+<style>
+    /* Custom CSS for circular checkboxes */
+    input[type="checkbox"] {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        border: 2px solid #ccc;
+        outline: none;
+        cursor: pointer;
+        position: relative;
+        vertical-align: middle;
+    }
+    
+    input[type="checkbox"]:checked {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+    }
+    
+    input[type="checkbox"]:checked::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: white;
+    }
+    
+    .card {
+        border: none;
+        box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.15) !important;
+        transition: transform 0.3s ease;
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .btn-primary {
+        background-color: #4e73df;
+        border-color: #4e73df;
+        box-shadow: 0 0.125rem 0.25rem rgba(78, 115, 223, 0.4);
+        transition: all 0.2s;
+    }
+    
+    .btn-primary:hover {
+        background-color: #2e59d9;
+        border-color: #2653d4;
+        transform: translateY(-1px);
+    }
+    
+    .form-control:focus {
+        border-color: #bac8f3;
+        box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.25);
+    }
+</style>
+
+<div class="container py-4 animate__animated animate__fadeIn">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="card">
+                <div class="card-header bg-primary text-white py-3">
+                    <h2 class="mb-0 fs-4">
+                        <i class="fas {% if form.instance.pk %}fa-edit{% else %}fa-plus-circle{% endif %} me-2"></i>
+                        {% if form.instance.pk %}Edit Task{% else %}Create New Task{% endif %}
+                    </h2>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" class="form">
+                        {% csrf_token %}
+                        
+                        {% for field in form %}
+                            <div class="form-group mb-4">
+                                <label for="{{ field.id_for_label }}" class="form-label fw-bold">
+                                    {{ field.label }}
+                                    {% if field.field.required %}<span class="text-danger">*</span>{% endif %}
+                                </label>
+                                
+                                {% if field.name == 'description' %}
+                                    {{ field|add_class:"form-control"|attr:"rows:4"|attr:"placeholder:Enter task description here..." }}
+                                {% elif field.name == 'title' %}
+                                    {{ field|add_class:"form-control"|attr:"placeholder:Enter task title here..." }}
+                                {% else %}
+                                    {{ field|add_class:"form-control" }}
+                                {% endif %}
+                                
+                                {% if field.help_text %}
+                                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                                {% endif %}
+                                
+                                {% if field.errors %}
+                                    <div class="alert alert-danger mt-2 p-2">
+                                        {{ field.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <a href="{% url 'tasks_list' %}" class="btn btn-outline-secondary me-2">
+                                <i class="fas fa-arrow-left me-1"></i> Back to Tasks
+                            </a>
+                            <button type="submit" class="btn btn-primary px-4 py-2">
+                                <i class="fas fa-save me-1"></i> 
+                                {% if form.instance.pk %}Update{% else %}Create{% endif %} Task
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Quick Tips Card -->
+            <div class="card mt-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0"><i class="fas fa-lightbulb text-warning me-2"></i>Tips for Creating Tasks</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="mb-0">
+                        <li>Be specific with your task title</li>
+                        <li>Add details in the description that will help you complete the task</li>
+                        <li>Break down large tasks into smaller, manageable ones</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

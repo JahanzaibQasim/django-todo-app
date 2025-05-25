@@ -1,0 +1,92 @@
+{% extends 'layout.html' %}
+
+{% block title %}My Tasks{% endblock %}
+
+{% block page_header %}Task List{% endblock %}
+{% block page_subheader %}Manage your tasks effectively{% endblock %}
+
+{% block content %}
+    <!-- Pending Tasks Section -->
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Pending Tasks</h5>
+            <a href="{% url 'create_task' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Add Task
+            </a>
+        </div>
+
+        <div class="card-body">
+            {% if tasks %}
+                <ul class="list-group">
+                {% for task in tasks %}
+                    <li class="list-group-item task-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a data-bs-toggle="collapse" data-bs-target="#task-{{ task.id }}" aria-expanded="false" class="text-decoration-none">
+                                {{ task.title }}
+                            </a>
+                            <div class="btn-group">
+                                <a href="{% url 'mark_complete' task.id %}" class="btn btn-sm btn-outline-success">
+                                    <i class="fas fa-check"></i>
+                                </a>
+                                <a href="{% url 'edit_task' task.id %}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{% url 'delete_task' task.id %}" class="btn btn-sm btn-outline-danger">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="collapse mt-2" id="task-{{ task.id }}">
+                            <div class="card card-body bg-light">
+                                {{ task.description|default:"No description provided." }}
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-center">No tasks available.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Completed Tasks Section -->
+    <div class="card mt-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Completed Tasks</h5>
+        </div>
+        <div class="card-body">
+            {% if completed_tasks %}
+                <ul class="list-group">
+                {% for task in completed_tasks %}
+                    <li class="list-group-item task-item completed">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a data-bs-toggle="collapse" data-bs-target="#completed-task-{{ task.id }}" aria-expanded="false" class="text-decoration-none">
+                                {{ task.title }}
+                            </a>
+                            <div class="btn-group">
+                                <a href="{% url 'mark_incomplete' task.id %}" class="btn btn-sm btn-outline-secondary">
+                                    <i class="fas fa-undo"></i>
+                                </a>
+                                <a href="{% url 'edit_task' task.id %}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{% url 'delete_task' task.id %}" class="btn btn-sm btn-outline-danger">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="collapse mt-2" id="completed-task-{{ task.id }}">
+                            <div class="card card-body bg-light">
+                                {{ task.description|default:"No description provided." }}
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-center">No completed tasks yet.</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
