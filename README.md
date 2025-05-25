@@ -36,9 +36,9 @@ A simple task management application built with Django.
 
 - Django
 - SQLite
-- Bootstrap (if used)
+- Bootstrap
 - Django Widget Tweaks
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License
